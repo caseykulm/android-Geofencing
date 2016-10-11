@@ -42,6 +42,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
-    List<Geofence> mGeofenceList;
+    GeofencingRequest mGeofenceRequest;
 
     // These will store hard-coded geofences in this sample app.
     private SimpleGeofence mAndroidBuildingGeofence;
@@ -92,7 +93,6 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
         // Instantiate a new geofence storage area.
         mGeofenceStorage = new SimpleGeofenceStore(this);
         // Instantiate the current List of geofences.
-        mGeofenceList = new ArrayList<Geofence>();
         createGeofences();
     }
 
@@ -101,6 +101,8 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
      * dynamically create geofences based on the user's location.
      */
     public void createGeofences() {
+        List<Geofence> geofenceList = new ArrayList<>();
+
         // Create internal "flattened" objects containing the geofence data.
         mAndroidBuildingGeofence = new SimpleGeofence(
                 ANDROID_BUILDING_ID,                // geofenceId.
@@ -122,8 +124,13 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
         // Store these flat versions in SharedPreferences and add them to the geofence list.
         mGeofenceStorage.setGeofence(ANDROID_BUILDING_ID, mAndroidBuildingGeofence);
         mGeofenceStorage.setGeofence(YERBA_BUENA_ID, mYerbaBuenaGeofence);
-        mGeofenceList.add(mAndroidBuildingGeofence.toGeofence());
-        mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
+        geofenceList.add(mAndroidBuildingGeofence.toGeofence());
+        geofenceList.add(mYerbaBuenaGeofence.toGeofence());
+
+        mGeofenceRequest = new GeofencingRequest.Builder()
+                .addGeofences(geofenceList)
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .build();
     }
 
 
@@ -151,8 +158,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
         // Get the PendingIntent for the geofence monitoring request.
         // Send a request to add the current geofences.
         mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
-        LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
-                mGeofenceRequestIntent);
+        LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceRequest, mGeofenceRequestIntent);
         Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
         finish();
     }

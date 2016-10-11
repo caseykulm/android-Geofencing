@@ -37,13 +37,23 @@ public final class Constants {
     // An app with dynamically-created geofences would want to include a reasonable expiration time.
     public static final long GEOFENCE_EXPIRATION_TIME = Geofence.NEVER_EXPIRE;
 
-    // Geofence parameters for the Android building on Google's main campus in Mountain View.
+    /**
+     * Geofence parameters for the Android building on Google's main campus in Mountain View.
+     *
+     * Command to use with telnet,
+     * geo fix -122.083648 37.420092
+     */
     public static final String ANDROID_BUILDING_ID = "1";
     public static final double ANDROID_BUILDING_LATITUDE = 37.420092;
     public static final double ANDROID_BUILDING_LONGITUDE = -122.083648;
     public static final float ANDROID_BUILDING_RADIUS_METERS = 60.0f;
 
-    // Geofence parameters for the Yerba Buena Gardens near the Moscone Center in San Francisco.
+    /**
+     * Geofence parameters for the Yerba Buena Gardens near the Moscone Center in San Francisco.
+     *
+     * Command to use with telnet
+     * geo fix -122.402671 37.784886
+     */
     public static final String YERBA_BUENA_ID = "2";
     public static final double YERBA_BUENA_LATITUDE = 37.784886;
     public static final double YERBA_BUENA_LONGITUDE = -122.402671;
